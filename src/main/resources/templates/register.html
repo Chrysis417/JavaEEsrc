@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="admin/_fragments :: head(~{::title})">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>博客管理登录</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/semantic-ui/2.2.4/semantic.min.css">
+  <link rel="stylesheet" href="../../static/css/me.css">
+</head>
+<body>
+
+<br>
+<br>
+<br>
+ <div class="m-container-small m-padded-tb-massive" style="max-width: 30em !important;">
+   <div class="ur container">
+     <div class="ui middle aligned center aligned grid">
+       <div class="column">
+         <h2 class="ui teal image header">
+           <div class="content">
+             用户注册
+           </div>
+         </h2>
+         <form class="ui large form" method="post" action="#" th:action="@{admin/register}" th:object="${user}">
+           <div class="ui  segment">
+             <div class="field">
+               <div class="ui left icon input">
+                 <i class="user icon"></i>
+                 <input type="text" name="username" th:value="*{username}" placeholder="用户名">
+               </div>
+             </div>
+             <div class="field">
+               <div class="ui left icon input">
+                 <i class="user icon"></i>
+                 <input type="text" name="nickname" th:value="*{nickname} placeholder="昵称">
+               </div>
+             </div>
+             <div class="field">
+               <div class="ui left icon input">
+                 <i class="user icon"></i>
+                 <input type="text" name="email" th:value="*{email}" placeholder="邮箱">
+               </div>
+             </div>
+             <div class="field">
+               <div class="ui left icon input">
+                 <i class="lock icon"></i>
+                 <input type="password" name="password" th:value="*{password}" id="pw1" placeholder="密码">
+               </div>
+             </div>
+             <div class="field">
+               <div class="ui left icon input">
+                 <i class="lock icon"></i>
+                 <input type="password" name="conpassword" id="pw2"  placeholder="确认密码">
+               </div>
+             </div>
+             <button type="submit" class="ui fluid large teal submit button" onclick="validate()">确认</button>
+           </div>
+
+          <div class="ui error mini message"></div>
+           <div class="ui mini negative message"  id="tishi"></div>
+
+         </form>
+
+       </div>
+     </div>
+   </div>
+ </div>
+
+<!--/*/<th:block th:replace="_fragments :: script">/*/-->
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.2/dist/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/semantic-ui/2.2.4/semantic.min.js"></script>
+<!--/*/</th:block>/*/-->
+
+<script>
+  function validate() {
+    var pw1 = document.getElementById("pw1").value;
+    var pw2 = document.getElementById("pw2").value;
+    if(pw1 != pw2) {
+      document.getElementById("tishi").innerHTML="两次密码不一致";
+      document.getElementById("submit").disabled = true;
+    }
+  }
+  $('.ui.form').form({
+    fields : {
+      username : {
+        identifier: 'username',
+        rules: [{
+          type : 'empty',
+          prompt: '请输入用户名'
+        }]
+      },
+      nickname : {
+        identifier: 'nickname',
+        rules: [{
+          type : 'empty',
+          prompt: '请输入昵称'
+        }]
+      },
+      email : {
+        identifier: 'email',
+        rules: [{
+          type : 'empty',
+          prompt: '请输入邮箱'
+        }]
+      },
+      password : {
+        identifier: 'password',
+        rules: [{
+          type : 'empty',
+          prompt: '请输入密码'
+        }]
+      },
+      conpassword : {
+        identifier: 'conpassword',
+        rules: [{
+          type : 'empty',
+          prompt: '请再次输入密码'
+        }]
+      },
+    }
+  });
+</script>
+
+</body>
+</html>
