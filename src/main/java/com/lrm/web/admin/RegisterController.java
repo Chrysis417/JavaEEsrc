@@ -32,45 +32,31 @@ public class RegisterController {
 
     @PostMapping("/register")
     public String register(User user, RedirectAttributes attributes) {
+
         if (userService.checkUser_Register(user.getUsername())) {
             user.setAvatar("https://unsplash.it/100/100?image=1005");
             user.setType(0);
             user.setCreateTime(new Date());
             user.setUpdateTime(new Date());
             user.setPassword(MD5Utils.code(user.getPassword()));
-
             User u = userService.saveUser(user);
 
             if (u == null) {
                 attributes.addFlashAttribute("message ", "注册失败");
+
             } else {
                 attributes.addFlashAttribute("message", "注册成功");
+                System.out.println("注册成功");
                 return REDIRECT_LOGIN;
             }
-            return "admin/register";
+            System.out.println("注册失败");
+            return REG;
 
         } else {
+            System.out.println("用户已存在");
             attributes.addFlashAttribute("message", "用户已存在");
-            return "admin/register";
+            return REG;
         }
     }
 
-
-//        blog.setUser((User) session.getAttribute("user"));
-//        blog.setType(typeService.getType(blog.getType().getId()));
-//        blog.setTags(tagService.listTag(blog.getTagIds()));
-//        Blog b;
-//        if (blog.getId() == null) {
-//            b =  blogService.saveBlog(blog);
-//        } else {
-//            b = blogService.updateBlog(blog.getId(), blog);
-//        }
-//
-//        if (b == null ) {
-//            attributes.addFlashAttribute("message", "操作失败");
-//        } else {
-//            attributes.addFlashAttribute("message", "操作成功");
-//        }
-//        return REDIRECT_LIST;
-//    }
 }
