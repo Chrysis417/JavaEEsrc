@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 /**
@@ -42,15 +43,24 @@ public class BlogController {
 
     @GetMapping("/blogs")
     public String blogs(@PageableDefault(size = 8, sort = {"updateTime"}, direction = Sort.Direction.DESC) Pageable pageable,
-                        BlogQuery blog, Model model) {
+                        BlogQuery blog, Model model,HttpSession session) {
         model.addAttribute("types", typeService.listType());
-        model.addAttribute("page", blogService.listBlog(pageable, blog));
+       // model.addAttribute("page", blogService.listBlog(pageable, blog));
+        if((session.getAttribute("user_type")).toString().equals("1")) {
+            //System.out.println("??");
+            model.addAttribute("page", blogService.listBlog(pageable));
+            //model.addAttribute("page", blogService.listBlog_id((Long) session.getAttribute("user_id"), pageable));
+        }
+        else {
+            model.addAttribute("page", blogService.listBlog_type(Long.valueOf(session.getAttribute("user_type").toString()), pageable));
+        }
         return LIST;
     }
 
     @PostMapping("/blogs/search")
     public String search(@PageableDefault(size = 8, sort = {"updateTime"}, direction = Sort.Direction.DESC) Pageable pageable,
-                         BlogQuery blog, Model model) {
+                         BlogQuery blog, Model model,HttpSession session, HttpServletRequest request) {
+        blog.setUser((User) request.getSession().getAttribute("user"));
         model.addAttribute("page", blogService.listBlog(pageable, blog));
         return "admin/blogs :: blogList";
     }

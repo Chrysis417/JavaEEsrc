@@ -1,5 +1,7 @@
 package com.lrm.vo;
 
+import com.lrm.po.User;
+
 /**
  * Created by limi on 2017/10/20.
  */
@@ -8,6 +10,7 @@ public class BlogQuery {
     private String title;
     private Long typeId;
     private boolean recommend;
+    private User user;
 
     public BlogQuery() {
     }
@@ -32,6 +35,13 @@ public class BlogQuery {
         return recommend;
     }
 
+    public void setUser(User user) {
+        this.user=user;
+    }
+
+    public User getUser() {
+        return user;
+    }
     public void setRecommend(boolean recommend) {
         this.recommend = recommend;
     }

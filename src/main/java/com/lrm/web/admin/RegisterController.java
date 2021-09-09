@@ -19,7 +19,7 @@ import java.util.Date;
 public class RegisterController {
 
     private static final String REG = "admin/register";
-    private static final String REDIRECT_LOGIN = "admin/login";
+    private static final String REDIRECT_LOGIN = "redirect:/admin";
 
     @Autowired
     private UserService userService;

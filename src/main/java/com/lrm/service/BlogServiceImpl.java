@@ -36,7 +36,7 @@ public class BlogServiceImpl implements BlogService {
         return blogRepository.findById(id).orElse(null);
     }
 
-
+    @Transactional
     @Override
     public Blog getAndConvert(Long id) {
         Blog blog = blogRepository.findById(id).orElse(null);
@@ -55,20 +55,24 @@ public class BlogServiceImpl implements BlogService {
 
     @Override
     public Page<Blog> listBlog(Pageable pageable, BlogQuery blog) {
-        return blogRepository.findAll((Specification<Blog>) (root, cq, cb) -> {
-            List<Predicate> predicates = new ArrayList<>();
-            if (!"".equals(blog.getTitle()) && blog.getTitle() != null) {
-                predicates.add(cb.like(root.<String>get("title"), "%" + blog.getTitle() + "%"));
+        return blogRepository.findAll(new Specification<Blog>() {
+            @Override
+            public Predicate toPredicate(Root<Blog> root, CriteriaQuery<?> cq, CriteriaBuilder cb) {
+                List<Predicate> predicates = new ArrayList<>();
+                if (!"".equals(blog.getTitle()) && blog.getTitle() != null) {
+                    predicates.add(cb.like(root.<String>get("title"), "%"+blog.getTitle()+"%"));
+                }
+                if (blog.getTypeId() != null) {
+                    predicates.add(cb.equal(root.<Type>get("type").get("id"), blog.getTypeId()));
+                }
+                if (blog.isRecommend()) {
+                    predicates.add(cb.equal(root.<Boolean>get("recommend"), blog.isRecommend()));
+                }
+                predicates.add(cb.equal(root.<Boolean>get("user"),blog.getUser()));
+                cq.where(predicates.toArray(new Predicate[predicates.size()]));
+                return null;
             }
-            if (blog.getTypeId() != null) {
-                predicates.add(cb.equal(root.<Type>get("type").get("id"), blog.getTypeId()));
-            }
-            if (blog.isRecommend()) {
-                predicates.add(cb.equal(root.<Boolean>get("recommend"), blog.isRecommend()));
-            }
-            cq.where(predicates.toArray(new Predicate[predicates.size()]));
-            return null;
-        }, pageable);
+        },pageable);
     }
 
     @Override
@@ -90,6 +94,25 @@ public class BlogServiceImpl implements BlogService {
     @Override
     public Page<Blog> listBlog(String query, Pageable pageable) {
         return blogRepository.findByQuery(query, pageable);
+    }
+
+
+    @Override
+    public Page<Blog> listBlog_type(Long usertype, Pageable pageable) {
+        return blogRepository.findAll(new Specification<Blog>() {
+            @Override
+            public Predicate toPredicate(Root<Blog> root, CriteriaQuery<?> cq, CriteriaBuilder cb) {
+                Join join = root.join("user");
+                return cb.equal(join.get("type"),usertype);
+            }
+        },pageable);
+    }
+  /*  public Page<Blog> listBlog(String query, Pageable pageable) {
+        return blogRepository.findByQuery(query,pageable);
+    }*/
+
+    public Page<Blog> listBlog_user(String query, Pageable pageable) {
+        return blogRepository.findById(query,pageable);
     }
 
     @Override

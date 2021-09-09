@@ -16,6 +16,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import javax.servlet.http.HttpSession;
+
 /**
  * Created by limi on 2017/10/13.
  */
@@ -33,7 +35,7 @@ public class IndexController {
 
     @GetMapping("/")
     public String index(@PageableDefault(size = 8, sort = {"updateTime"}, direction = Sort.Direction.DESC) Pageable pageable,
-                        Model model) {
+                        Model model, HttpSession session) {
         model.addAttribute("page",blogService.listBlog(pageable));
         model.addAttribute("types", typeService.listTypeTop(6));
         model.addAttribute("tags", tagService.listTagTop(10));
@@ -44,9 +46,10 @@ public class IndexController {
 
     @PostMapping("/search")
     public String search(@PageableDefault(size = 8, sort = {"updateTime"}, direction = Sort.Direction.DESC) Pageable pageable,
-                         @RequestParam String query, Model model) {
-        model.addAttribute("page", blogService.listBlog("%"+query+"%", pageable));
-        model.addAttribute("query", query);
+                         @RequestParam String query, Model model,HttpSession session) {
+       // model.addAttribute("page", blogService.listBlog("%"+query+"%", pageable));
+       // model.addAttribute("query", query);
+        model.addAttribute("page", blogService.listBlog_type(Long.valueOf(session.getAttribute("user_type").toString()), pageable));
         return "search";
     }
 

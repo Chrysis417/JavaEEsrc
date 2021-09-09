@@ -39,6 +39,8 @@ public class LoginController {
         if (user != null) {
             user.setPassword(null);
             session.setAttribute("user",user);
+            session.setAttribute("user_id", user.getId());
+            session.setAttribute("user_type", user.getType());
             return "admin/index";
         } else {
             attributes.addFlashAttribute("message", "用户名和密码错误");
